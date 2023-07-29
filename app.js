@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 // const date = require(__dirname+"/date.js");
 const mongoose = require("mongoose");
 const _ = require("lodash");
+require('dotenv').config();
 
 
 const app = express();
@@ -14,14 +15,15 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));  
 
+const PORT = process.env.PORT || 3000
+
 main().catch(err => console.log(err));
-
+mongoose.set('strictQuery',false);
 async function main() {
-    app.listen(3000,function(){
-        console.log("Server started on port 3000");
+    await mongoose.connect(process.env.MONGO_URI);
+    app.listen(PORT,function(){
+        console.log("Server started on port");
     });
-
-    await mongoose.connect("mongodb://admin-harshit:root@ac-hwor9dy-shard-00-00.7yqtipq.mongodb.net:27017,ac-hwor9dy-shard-00-01.7yqtipq.mongodb.net:27017,ac-hwor9dy-shard-00-02.7yqtipq.mongodb.net:27017/?ssl=true&replicaSet=atlas-re7q3x-shard-0&authSource=admin&retryWrites=true");
     
     const itemsSchema = new mongoose.Schema({
         name: String
